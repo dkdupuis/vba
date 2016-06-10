@@ -1,0 +1,37 @@
+Sub Main
+
+
+Dim hf As HistoryFile
+Dim hn As HistoryNode
+
+Dim nodeName, newNodeName, parentNodeName, superParentNodeName, path As String
+
+nodeName="Artifact Rejection"
+newNodeName="Artifact Rejection Go Corr"
+parentNodeName="All Blocks SL_GO_Cor"
+superParentNodeName="1-30Hz"
+badSuperParentNodeName="Filters 4-20"
+path=""
+For Each hf In HistoryFiles
+
+	hf.Open
+	Set hn = hf.FindNode(nodeName)
+
+	Do While Not hn Is Nothing
+
+		path=hn.FullPath
+		If InStr(path, parentNodeName)<>0 And InStr(path, superParentNodeName)<>0 And InStr(path,badSuperParentNodeName)=0 Then
+
+			hn.Name = newNodeName
+
+		End If
+
+		Set hn = hf.FindNextNode()
+
+	Loop
+
+	hf.Close
+
+Next
+
+End Sub

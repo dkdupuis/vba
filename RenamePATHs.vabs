@@ -1,0 +1,26 @@
+Sub Main
+
+Dim hf As HistoryFile
+Dim hn, target As HistoryNode
+
+
+For Each hf In HistoryFiles
+
+	hf.Open
+	Set hn = hf.FindNode("Ave_RL_NOGO_Err")
+
+	Do While Not hn Is Nothing
+
+		Set target = hn.ParentNode
+		target.Name= "export for dave"
+
+		Set hn = hf.FindNextNode()
+
+	Loop
+
+	hf.Close
+
+Next
+
+
+End Sub

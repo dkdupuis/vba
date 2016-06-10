@@ -1,0 +1,24 @@
+Sub Main
+
+Dim path As String
+Dim hf As HistoryFile
+Dim hn, par As HistoryNode
+
+	For Each hf In HistoryFiles
+
+
+		hf.Open
+		Set hn = hf.FindNode("OcularCorrection 2")
+
+		Do While Not hn Is Nothing
+
+			Set par = hn.ParentNode
+			par.Delete
+			Set hn = hf.FindNextNode
+
+		Loop
+
+		hf.Close
+
+	Next
+End Sub

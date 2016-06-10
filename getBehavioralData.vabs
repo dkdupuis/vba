@@ -1,0 +1,126 @@
+Sub Main
+
+Dim hf As HistoryFile
+Dim hn As HistoryNode
+Dim m As Markers
+Dim totMarkers, curMark, stimMarksCounted, seg, samplingRate, goCorr, goTot As Integer
+Dim pos,totResponseTime,timeConver,MRT,stdInc As Double
+Dim temp, temp2 As Marker
+Dim segString, goStim, response As String
+Dim responseTimes() As Double
+
+goStim="s 80"
+response="s128"
+
+filename= CurrentWorkspace.ExportFileFolder &"\BehavioralOutput.txt"
+file=FreeFile
+Open filename For Output As file
+
+samplingRate=512
+timeConver=1000/samplingRate
+
+For Each hf In HistoryFiles
+	'Set hf=HistoryFiles("101376_critter")
+	goCorr=0
+	goTot=0
+	totResponseTime=0
+
+	hf.Open
+	Set hn = hf.FindNode("MergeBitMarkers_bcremoved")
+
+	If Not hn Is Nothing Then
+
+		'Set nhn = New NewHistoryNode
+		'nhn.Create "AddSegementMarks", hn, hf.Name, True,viDtTimeDomain,0,0,hn.Dataset.SamplingInterval
+		Set m=hn.Dataset.Markers
+		totMarkers=m.Count
+		stimMarksCounted=0
+		seg=1
+		segString=CStr(seg)
+
+		For curMark = 1 To totMarkers
+
+			Set temp=m.Item(curMark)
+
+
+
+
+			If StrComp(temp.Description,goStim,vbTextCompare)=0 Then
+
+
+
+				If curMark<totMarkers +1 Then
+
+					Set temp2=m.Item(curMark+1)
+
+
+					If StrComp(temp2.Description,response,vbTextCompare)=0 Then
+
+						goTot=goTot+1
+						pos=(temp2.Position-temp.Position)*timeConver
+						'MsgBox(Str(pos))
+						If pos > 100 And pos <1000 Then
+
+							goCorr=goCorr+1
+							totResponseTime=totResponseTime+pos
+							ReDim Preserve responseTimes(goCorr)
+							responseTimes(goCorr)=pos
+
+						End If
+					End If
+				End If
+
+
+			End If
+
+
+
+			'Set temp=m.Item(curMark)
+			'If StrComp(temp.Description,"GST+",vbTextCompare)=0 Then
+
+			'	nhn.AddMarker 0, temp.Position+1, 1,"Comment", segString, False
+			'	stimMarksCounted=stimMarksCounted+1
+
+			'End If
+
+			'If StrComp(temp.Description,"LST+",vbTextCompare)=0 Then
+
+			'	nhn.AddMarker 0, temp.Position+1, 1,"Comment", segString, False
+			'	stimMarksCounted=stimMarksCounted+1
+
+			'End If
+
+			'If (stimMarksCounted=69) Then
+			'	stimMarksCounted=0
+			'	seg=seg+1
+			'	segString=CStr(seg)
+			'End If
+
+		Next
+
+
+		hf.Close
+
+	End If
+
+
+
+	If goCorr>0 Then
+
+		stdInc=0
+		MRT=totResponseTime/goCorr
+
+		For i=1 To goCorr
+
+			stdInc=stdInc+(responseTimes(i)-MRT)*(responseTimes(i)-MRT)
+
+		Next
+
+		Print #file, hf.Name & vbTab & goCorr & vbTab & MRT & vbTab & Sqr(stdInc/(goCorr-1))/MRT
+
+	End If
+
+Next
+
+
+End Sub

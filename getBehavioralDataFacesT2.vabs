@@ -1,0 +1,341 @@
+Sub Main
+
+Dim hf As HistoryFile
+Dim hn As HistoryNode
+Dim m As Markers
+Dim totMarkers, curMark, stimMarksCounted, seg, samplingRate, goCorr, goIncorr, noGoCorr, noGoIncorr, goTot As Integer
+Dim pos,totResponseTime,timeConver,MRT,stdInc As Double
+Dim temp, temp2 As Marker
+Dim segString, goStim, response, tMark As String
+Dim responseTimes() As Double
+Dim foundMarker As Boolean
+
+
+response="s128"
+
+'critter1
+goStim1="S 80"
+goStim2="xx"
+goStim3="xx"
+noGoStim1="S 16"
+noGoStim2="xx"
+noGoStim3="xx"
+'critter2
+'goStim1="S 85"
+'goStim2="S 87"
+'goStim3="S 91"
+'noGoStim1="S 21"
+'noGoStim2="S 23"
+'noGoStim3="S 27"
+
+'faces
+gS1="S  1"
+gS2="S  2"
+gS3="S  3"
+gS4="S  4"
+gS5="S  5"
+gS6="S  6"
+gS7="S  7"
+gS8="S  8"
+gS9="S  9"
+gS10="S 10"
+gS11="S 11"
+gS12="S 12"
+gS13="S 13"
+gS14="S 14"
+gS15="S 15"
+gS16="S 16"
+gS17="S 17"
+gS18="S 18"
+gS19="S 19"
+gS20="S 20"
+gS21="S 21"
+gS22="S 22"
+gS23="S 23"
+gS24="S 24"
+
+gS101="S201"
+gS102="S202"
+gS103="S203"
+gS104="S204"
+gS105="S205"
+gS106="S206"
+gS107="S207"
+gS108="S208"
+gS109="S209"
+gS110="S210"
+gS111="S211"
+gS112="S212"
+gS113="S213"
+gS114="S214"
+gS115="S215"
+gS116="S216"
+gS117="S217"
+gS118="S218"
+gS119="S219"
+gS120="S220"
+gS121="S221"
+gS122="S222"
+gS123="S223"
+gS124="S224"
+
+gS201="S101"
+gS202="S102"
+gS203="S103"
+gS204="S104"
+gS205="S105"
+gS206="S106"
+gS207="S107"
+gS208="S108"
+gS209="S109"
+gS210="S110"
+gS211="S111"
+gS212="S112"
+gS213="S113"
+gS214="S114"
+gS215="S115"
+gS216="S116"
+gS217="S117"
+gS218="S118"
+gS219="S119"
+gS220="S120"
+gS221="S121"
+gS222="S122"
+gS223="S123"
+gS224="S124"
+
+ng31="S 31"
+ng32="S 32"
+ng33="S 33"
+ng34="S 34"
+ng35="S 35"
+ng36="S 36"
+ng37="S 37"
+ng38="S 38"
+ng39="S 39"
+ng40="S 40"
+ng41="S 41"
+ng42="S 42"
+ng43="S 43"
+ng44="S 44"
+ng45="S 45"
+ng46="S 46"
+ng47="S 47"
+ng48="S 48"
+ng49="S 49"
+ng50="S 50"
+
+ng131="S131"
+ng132="S132"
+ng133="S133"
+ng134="S134"
+ng135="S135"
+ng136="S136"
+ng137="S137"
+ng138="S138"
+ng139="S139"
+ng140="S140"
+ng141="S141"
+ng142="S142"
+ng143="S143"
+ng144="S144"
+ng145="S145"
+ng146="S146"
+ng147="S147"
+ng148="S148"
+ng149="S149"
+ng150="S150"
+
+ng231="S231"
+ng232="S232"
+ng233="S233"
+ng234="S234"
+ng235="S235"
+ng236="S236"
+ng237="S237"
+ng238="S238"
+ng239="S239"
+ng240="S240"
+ng241="S241"
+ng242="S242"
+ng243="S243"
+ng244="S244"
+ng245="S245"
+ng246="S246"
+ng247="S247"
+ng248="S248"
+ng249="S249"
+ng250="S250"
+
+
+filename= CurrentWorkspace.ExportFileFolder &"\BehavioralOutput_t3.txt"
+file=FreeFile
+Open filename For Output As file
+
+samplingRate=512
+timeConver=1000/samplingRate
+
+For Each hf In HistoryFiles
+	'Set hf=HistoryFiles("101376_critter")
+	goCorr=0
+	goIncorr=0
+	noGoCorr=0
+	noGoIncorr=0
+	goTot=0
+	totResponseTime=0
+
+	hf.Open
+	Set hn = hf.FindNode("MergeBitMarkers")
+
+	If Not hn Is Nothing Then
+
+		'Set nhn = New NewHistoryNode
+		'nhn.Create "AddSegementMarks", hn, hf.Name, True,viDtTimeDomain,0,0,hn.Dataset.SamplingInterval
+		Set m=hn.Dataset.Markers
+		totMarkers=m.Count
+		stimMarksCounted=0
+		seg=1
+		segString=CStr(seg)
+
+		For curMark = 1 To totMarkers
+
+			Set temp=m.Item(curMark)
+			tMark=temp.Description
+			foundMarker=False
+
+			If StrComp(tMark,gS1,1)=0 Or StrComp(tMark,gS2,1)=0 Or StrComp(tMark,gS3,1)=0 Or StrComp(tMark,gS4,1)=0 Or StrComp(tMark,gS5,1)=0 Or StrComp(tMark,gS6,1)=0 Or StrComp(tMark,gS7,1)=0 Or StrComp(tMark,gS8,1)=0 Or StrComp(tMark,gS9,1)=0 Or StrComp(tMark,gS10,1)=0 Or StrComp(tMark,gS11,1)=0 Or StrComp(tMark,gS12,1)=0 Or StrComp(tMark,gS13,1)=0 Or StrComp(tMark,gS14,1)=0 Or StrComp(tMark,gS15,1)=0 Or StrComp(tMark,gS16,1)=0 Or StrComp(tMark,gS17,1)=0 Or StrComp(tMark,gS18,1)=0 Or StrComp(tMark,gS19,1)=0 Or StrComp(tMark,gS20,1)=0 Or StrComp(tMark,gS21,1)=0 Or StrComp(tMark,gS22,1)=0 Or StrComp(tMark,gS23,1)=0 Or StrComp(tMark,gS24,1)=0 Or StrComp(tMark,gS101,1)=0 Or StrComp(tMark,gS102,1)=0 Or StrComp(tMark,gS103,1)=0 Or StrComp(tMark,gS104,1)=0 Or StrComp(tMark,gS105,1)=0 Or StrComp(tMark,gS106,1)=0 Or StrComp(tMark,gS107,1)=0 Or StrComp(tMark,gS108,1)=0 Or StrComp(tMark,gS109,1)=0 Or StrComp(tMark,gS110,1)=0 Or StrComp(tMark,gS111,1)=0 Or StrComp(tMark,gS112,1)=0 Or StrComp(tMark,gS113,1)=0 Or StrComp(tMark,gS114,1)=0 Or StrComp(tMark,gS115,1)=0 Or StrComp(tMark,gS116,1)=0 Or StrComp(tMark,gS117,1)=0 Or StrComp(tMark,gS118,1)=0 Then
+
+				foundMarker=True
+
+			Else
+
+				If StrComp(tMark,gS119,1)=0 Or StrComp(tMark,gS120,1)=0 Or StrComp(tMark,gS121,1)=0 Or StrComp(tMark,gS122,1)=0 Or StrComp(tMark,gS123,1)=0 Or StrComp(tMark,gS124,1)=0 Or StrComp(tMark,gS201,1)=0 Or StrComp(tMark,gS202,1)=0 Or StrComp(tMark,gS203,1)=0 Or StrComp(tMark,gS204,1)=0 Or StrComp(tMark,gS205,1)=0 Or StrComp(tMark,gS206,1)=0 Or StrComp(tMark,gS207,1)=0 Or StrComp(tMark,gS208,1)=0 Or StrComp(tMark,gS209,1)=0 Or StrComp(tMark,gS210,1)=0 Or StrComp(tMark,gS211,1)=0 Or StrComp(tMark,gS212,1)=0 Or StrComp(tMark,gS213,1)=0 Or StrComp(tMark,gS214,1)=0 Or StrComp(tMark,gS215,1)=0 Or StrComp(tMark,gS216,1)=0 Or StrComp(tMark,gS217,1)=0 Or StrComp(tMark,gS218,1)=0 Or StrComp(tMark,gS219,1)=0 Or StrComp(tMark,gS220,1)=0 Or StrComp(tMark,gS221,1)=0 Or StrComp(tMark,gS222,1)=0 Or StrComp(tMark,gS223,1)=0 Or StrComp(tMark,gS224,1)=0 Then
+
+					foundMarker=True
+
+				End If
+			End If
+			'MsgBox(tMark)
+			'MsgBox(Str(foundMarker))
+
+			If foundMarker Then
+
+				If curMark < totMarkers Then
+
+					Set temp2=m.Item(curMark+1)
+
+
+					If StrComp(temp2.Description,response,vbTextCompare)=0 Then
+
+						goTot=goTot+1
+						pos=(temp2.Position-temp.Position)*timeConver
+						'MsgBox(Str(pos))
+						If pos > 100 And pos <1000 Then
+
+							goCorr=goCorr+1
+							totResponseTime=totResponseTime+pos
+							ReDim Preserve responseTimes(goCorr)
+							responseTimes(goCorr)=pos
+
+						Else
+							If pos>1000 Then
+
+								goIncorr=goIncorr+1
+
+							End If
+
+						End If
+					Else
+
+						goIncorr=goIncorr+1
+
+					End If
+				Else
+
+					goIncorr=goIncorr+1
+
+				End If
+			Else
+
+				'MsgBox(Str(foundMarker))
+				foundMarker=False
+
+				If StrComp(tMark,ng31,1)=0 Or StrComp(tMark,ng32,1)=0 Or StrComp(tMark,ng33,1)=0 Or StrComp(tMark,ng34,1)=0 Or StrComp(tMark,ng35,1)=0 Or StrComp(tMark,ng36,1)=0 Or StrComp(tMark,ng37,1)=0 Or StrComp(tMark,ng38,1)=0 Or StrComp(tMark,ng39,1)=0 Or StrComp(tMark,ng40,1)=0 Or StrComp(tMark,ng41,1)=0 Or StrComp(tMark,ng42,1)=0 Or StrComp(tMark,ng43,1)=0 Or StrComp(tMark,ng44,1)=0 Or StrComp(tMark,ng45,1)=0 Or StrComp(tMark,ng46,1)=0 Or StrComp(tMark,ng47,1)=0 Or StrComp(tMark,ng48,1)=0 Or StrComp(tMark,ng49,1)=0 Or StrComp(tMark,ng50,1)=0 Or StrComp(tMark,ng131,1)=0 Or StrComp(tMark,ng132,1)=0 Or StrComp(tMark,ng133,1)=0 Or StrComp(tMark,ng134,1)=0 Or StrComp(tMark,ng135,1)=0 Or StrComp(tMark,ng136,1)=0 Or StrComp(tMark,ng137,1)=0 Or StrComp(tMark,ng138,1)=0 Or StrComp(tMark,ng139,1)=0 Or StrComp(tMark,ng140,1)=0 Or StrComp(tMark,ng141,1)=0 Or StrComp(tMark,ng142,1)=0 Or StrComp(tMark,ng143,1)=0 Or StrComp(tMark,ng144,1)=0 Or StrComp(tMark,ng145,1)=0 Or StrComp(tMark,ng146,1)=0 Or StrComp(tMark,ng147,1)=0 Or StrComp(tMark,ng148,1)=0 Or StrComp(tMark,ng149,1)=0 Or StrComp(tMark,ng150,1)=0 Then
+
+					foundMarker=True
+
+				Else
+
+					If StrComp(tMark,ng231,1)=0 Or StrComp(tMark,ng232,1)=0 Or StrComp(tMark,ng233,1)=0 Or StrComp(tMark,ng234,1)=0 Or StrComp(tMark,ng235,1)=0 Or StrComp(tMark,ng236,1)=0 Or StrComp(tMark,ng237,1)=0 Or StrComp(tMark,ng238,1)=0 Or StrComp(tMark,ng239,1)=0 Or StrComp(tMark,ng240,1)=0 Or StrComp(tMark,ng241,1)=0 Or StrComp(tMark,ng242,1)=0 Or StrComp(tMark,ng243,1)=0 Or StrComp(tMark,ng244,1)=0 Or StrComp(tMark,ng245,1)=0 Or StrComp(tMark,ng246,1)=0 Or StrComp(tMark,ng247,1)=0 Or StrComp(tMark,ng248,1)=0 Or StrComp(tMark,ng249,1)=0 Or StrComp(tMark,ng250,1)=0 Then
+
+						foundMarker=True
+
+					End If
+				End If
+
+				If foundMarker Then
+
+
+				'If  StrComp(temp.Description,noGoStim1,vbTextCompare)=0 Or StrComp(temp.Description,noGoStim2,vbTextCompare)=0 Or StrComp(temp.Description,noGoStim3,vbTextCompare)=0 Then
+
+					If curMark < totMarkers Then
+
+						Set temp2=m.Item(curMark+1)
+
+						If StrComp(temp2.Description,response,vbTextCompare)=0 Then
+
+							pos=(temp2.Position-temp.Position)*timeConver
+
+							If pos > 100 And pos <1000 Then
+
+								noGoIncorr=noGoIncorr+1
+
+							Else
+								If pos > 1000 Then
+
+									noGoCorr=noGoCorr+1
+
+								End If
+							End If
+						Else
+
+							noGoCorr=noGoCorr+1
+
+						End If
+					Else
+
+						noGoCorr=noGoCorr+1
+
+					End If
+				End If
+			End If
+
+		Next
+
+
+		hf.Close
+
+	End If
+
+
+	'MsgBox(Str(goTot))
+	If goCorr>0 Then
+
+		stdInc=0
+		MRT=totResponseTime/goCorr
+
+		For i=1 To goCorr
+
+			stdInc=stdInc+(responseTimes(i)-MRT)*(responseTimes(i)-MRT)
+
+		Next
+
+		Print #file, hf.Name & vbTab & goCorr & vbTab & goIncorr & vbTab & noGoCorr & vbTab & noGoIncorr & vbTab & MRT & vbTab & Sqr(stdInc/(goCorr-1))/MRT
+
+	End If
+
+Next
+
+
+
+End Sub

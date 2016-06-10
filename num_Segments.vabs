@@ -1,0 +1,79 @@
+Sub Main
+
+'Dim temp As Integer
+Dim hn, subnode, subsubnode, temp, segNode As HistoryNode
+Dim file As Long
+Dim filename As String
+filename= CurrentWorkspace.ExportFileFolder &"\Num_Segment_list.txt"
+file=FreeFile
+Open filename For Output As file
+
+Dim subhf As HistoryFile
+
+For Each hf In HistoryFiles
+	hf.Open
+
+	Set hn = hf.FindNode("Artifact Rejection")
+	If Not hn Is Nothing Then
+		Print #file, hf.Name
+
+		Do While Not hn Is Nothing
+			Set par=hn.ParentNode.ParentNode
+			If StrComp(par.Name,"No_go_correct_after_go_correct",vbTextCompare)=0 Then
+				Set segNode=par.ParentNode
+				If StrComp(segNode.ParentNode.Name,"Segmentation",vbTextCompare)=0 Then
+					Print #file, segNode.Name & vbTab & hn.Segments.Count
+
+
+				End If
+
+			End If
+
+			Set hn = hf.FindNextNode()
+		Loop
+	End If
+
+	hf.Close
+Next
+
+Close file
+End Sub
+
+
+'	If Not hn Is Nothing Then
+'
+'		Print #file, hf.Name
+'
+'
+'		temp=hn.Segments.Count
+'
+'
+'		If temp>0 Then
+'
+'			For i=1 To temp
+'
+'				Set subnode=hn.HistoryNodes(i)
+'				Set subhf=subnode.HistoryFile
+'				Set subsubnode=subhf.FindNode("Go_correct")
+'
+'				If subsubnode Is Nothing Then
+'					Print #file, i & "   " & subnode.Name & "   " & 0
+'				Else
+'					Set subhf=subsubnode.HistoryFile
+'					Set subsubnode=subhf.FindNode("Artifact Rejection")
+'					If subsubnode Is Nothing Then
+'						Print #file, i & "   " & subnode.Name & "   " & 0
+'					Else
+'						Print #file, i & "   " & subnode.Name & "   " & subsubnode.Segments.Count
+'					End If
+'				End If
+'
+'
+'			Next
+'		End If
+
+
+
+'	End If
+
+

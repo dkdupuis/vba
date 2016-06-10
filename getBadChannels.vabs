@@ -1,0 +1,40 @@
+Sub Main
+
+Dim hn As HistoryNode
+Dim file As Long
+Dim filename, noGoNodeName, cohortTimeName As String
+
+target="Edit Channels"
+cohortTimeName="t3"
+
+filename= CurrentWorkspace.ExportFileFolder & "\" & cohortTimeName & "_" & target & ".txt"
+
+file=FreeFile
+
+Open filename For Output As file
+
+
+Dim subhf As HistoryFile
+
+For Each hf In HistoryFiles
+
+	hf.Open
+	Set hn = hf.FindNode(target)
+
+	If Not hn Is Nothing Then
+		If hn.ContainsData=True Then
+
+					'MsgBox(hn.Description)
+					Print #file, hf.Name & vbTab & hn.Description
+
+
+		End If
+	End If
+
+	hf.Close
+Next
+
+Close file
+
+
+End Sub

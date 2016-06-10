@@ -1,0 +1,25 @@
+Sub Main
+
+'Dim temp As Integer
+Dim hn As HistoryNode
+Dim file As Long
+Dim filename As String
+filename= CurrentWorkspace.ExportFileFolder &"\Num_Segment_list.txt"
+file=FreeFile
+Open filename For Output As file
+
+
+
+For Each hf In HistoryFiles
+	hf.Open
+
+	Set hn = hf.FindNode("RL_NOGO_Err_dataAnalysis")
+	If Not hn Is Nothing Then
+		Print #file, hf.Name & vbTab & hn.Segments.Count
+	End If
+
+	hf.Close
+Next
+
+Close file
+End Sub

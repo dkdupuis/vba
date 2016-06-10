@@ -1,0 +1,61 @@
+Sub Main
+
+	Dim hf As HistoryFile
+	Dim hn,temp As HistoryNode
+	Dim path As String
+
+
+For Each hf In HistoryFiles
+
+'	Set hf=HistoryFiles(1)
+	hf.Open
+	Set hn = hf.FindNode("AverageRNR15")
+
+	Do While Not hn Is Nothing
+
+		path=hn.FullPath
+
+		If InStr(path, "Go_Correct_Cry_Reward")<>0 Then
+			hn.Name="AverageGC_CR"
+		End If
+
+		If InStr(path, "No_Go_Incorrect_Cry_Reward_RespLocked")<>0 Then
+				hn.Name="AverageNGI_CR"
+		End If
+
+		If InStr(path, "Go_Correct_Cry_No_Reward")<>0 Then
+			hn.Name="AverageGC_CNR"
+		End If
+
+		If InStr(path, "No_Go_Incorrect_Cry_No_Reward_RespLocked")<>0 Then
+			hn.Name="AverageNGI_CNR"
+		End If
+
+		If InStr(path, "Go_Correct_No_Cry_Reward")<>0 Then
+			hn.Name="AverageGC_NCR"
+		End If
+
+		If InStr(path, "No_Go_Incorrect_No_Cry_Reward_RespLocked")<>0 Then
+			hn.Name="AverageNGI_NCR"
+		End If
+
+		If InStr(path, "Go_Correct_No_Cry_No_Reward")<>0 Then
+			hn.Name="AverageGC_NCNR"
+		End If
+
+		If InStr(path, "No_Go_Incorrect_No_Cry_No_Reward_RespLocked")<>0 Then
+			hn.Name="AverageNGI_NCNR"
+		End If
+
+
+		Set hn = hf.FindNextNode()
+
+	Loop
+
+	hf.Close
+
+Next
+
+
+
+End Sub

@@ -1,0 +1,56 @@
+Sub Main
+
+Dim hn As HistoryNode
+Dim m As Markers
+Dim totMarkers, curMark, stimMarksCounted, seg As Integer
+Dim temp As Marker
+Dim segString As String
+
+For Each hf In HistoryFiles
+
+	hf.Open
+	Set hn = hf.FindNode("Segmentation")
+
+	If Not hn Is Nothing Then
+
+		Set nhn = New NewHistoryNode
+		nhn.Create "AddSegementMarks", hn, hf.Name, True,viDtTimeDomain,0,0,hn.Dataset.SamplingInterval
+		Set m=hn.Dataset.Markers
+		totMarkers=m.Count
+		stimMarksCounted=0
+		seg=1
+		segString=CStr(seg)
+
+		For curMark = 1 To totMarkers
+
+			Set temp=m.Item(curMark)
+			If StrComp(temp.Description,"GST+",vbTextCompare)=0 Then
+
+				nhn.AddMarker 0, temp.Position+1, 1,"Comment", segString, False
+				stimMarksCounted=stimMarksCounted+1
+
+			End If
+
+			If StrComp(temp.Description,"LST+",vbTextCompare)=0 Then
+
+				nhn.AddMarker 0, temp.Position+1, 1,"Comment", segString, False
+				stimMarksCounted=stimMarksCounted+1
+
+			End If
+
+			If (stimMarksCounted=69) Then
+				stimMarksCounted=0
+				seg=seg+1
+				segString=CStr(seg)
+			End If
+
+		Next
+
+		nhn.Finish
+		hf.Close
+
+	End If
+
+Next
+
+End Sub

@@ -1,0 +1,76 @@
+Sub Main
+
+'Dim temp As Integer
+Dim hn, subnode, subsubnode, temp, segNode As HistoryNode
+Dim file As Long
+Dim filename As String
+filename= CurrentWorkspace.ExportFileFolder &"\Go_Num_Segment_list.txt"
+
+file=FreeFile
+
+Open filename For Output As file
+
+
+Dim subhf As HistoryFile
+
+For Each hf In HistoryFiles
+	hf.Open
+
+	Set hn = hf.FindNode("Artifact Rejection")
+	If Not hn Is Nothing Then
+		Print #file, hf.Name
+
+		Do While Not hn Is Nothing
+
+			If InStr(hn.FullPath, "Go_Correct_Cry_Reward")<>0 Then
+
+				Print #file, "CR" & vbTab & hn.Segments.Count
+
+			Else
+				If InStr(hn.FullPath, "Go_Correct_Cry_No_Reward")<>0 Then
+
+					Print #file, "CNR" & vbTab &  hn.Segments.Count
+				Else
+					If InStr(hn.FullPath, "Go_Correct_No_Cry_Reward")<>0 Then
+
+						Print #file, "NCR" & vbTab &  hn.Segments.Count
+
+
+					Else
+						If InStr(hn.FullPath, "Go_Correct_No_Cry_No_Reward")<>0 Then
+
+							Print #file, "NCNR" & vbTab &  hn.Segments.Count
+
+						End If
+
+					End If
+
+				End If
+
+
+			End If
+
+			'Set par=hn.ParentNode.ParentNode
+			'If StrComp(par.Name,"No_Go_Incorrect_Cry_Reward_RespLocked",vbTextCompare)=0 Then
+				'Set segNode=par.ParentNode
+				'If StrComp(segNode.ParentNode.Name,"Segmentation",vbTextCompare)=0 Then
+
+
+
+				'End If
+
+		'	End If
+
+			Set hn = hf.FindNextNode()
+		Loop
+	End If
+
+	hf.Close
+Next
+
+Close file
+
+End Sub
+
+
+

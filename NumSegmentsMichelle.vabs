@@ -1,0 +1,47 @@
+Sub Main
+
+'Dim temp As Integer
+Dim hn As HistoryNode
+Dim file As Long
+Dim filename, noGoNodeName, cohortTimeName As String
+
+target="Artifact Rejection NOGO_ERR A2"
+cohortTimeName="t1w2"
+
+filename= CurrentWorkspace.ExportFileFolder & "\" & cohortTimeName & "Artifact Rejection NOGO_ERR A2.txt"
+
+file=FreeFile
+
+Open filename For Output As file
+
+
+Dim subhf As HistoryFile
+
+For Each hf In HistoryFiles
+
+	hf.Open
+	Set hn = hf.FindNode(target)
+
+	If Not hn Is Nothing Then
+		If hn.ContainsData=True Then
+
+'			Do While Not hn Is Nothing
+'				If InStr(hn.FullPath, "RL_NOGO_Err_B1")<>0 And InStr(hn.FullPath, "-")=0 Then
+
+					Print #file, hf.Name & vbTab & hn.Segments.Count
+
+'				End If
+'				Set hn = hf.FindNextNode()
+'			Loop
+
+
+
+		End If
+	End If
+
+	hf.Close
+Next
+
+Close file
+
+End Sub

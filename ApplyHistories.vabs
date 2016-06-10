@@ -1,0 +1,33 @@
+Sub Main
+
+	Dim hn, temp As HistoryNode
+	Dim hf As HistoryFile
+	Dim path As String
+
+	Set hf=HistoryFiles(22)
+	hf.Open
+	Set hn = hf.FindNode("Artifact Rejection")
+
+	'MsgBox(hn.FullPath)
+	Do While Not hn Is Nothing
+
+		path=hn.FullPath
+
+		If InStr(path, "B_")<>0 Then
+
+			Set temp=hn.ParentNode
+			temp.ApplyTemplate("art.ehtp")
+
+
+		End If
+		'MsgBox(hn.FullPath)
+		Set hn = hf.FindNextNode()
+
+	Loop
+
+
+
+
+
+	hf.Close
+End Sub

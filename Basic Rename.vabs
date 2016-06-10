@@ -1,0 +1,59 @@
+Sub Main
+
+
+	Dim hf As HistoryFile
+	Dim hn As HistoryNode
+	Dim path, targetName, hzNodeName, newName1, newName2 As String
+	Dim pathTarget1, pathTarget2 As String
+
+	'parNodeName="Block 1 RL_NOGO_Err"
+	targetName="AR_RLNoGoErr_bcr"
+
+	pathTarget1="All Blocks RL_NOGO_Err_Correct_Segmentation"
+	'pathTarget2="Block 2 SL_GO_Cor"
+	'pathTarget3="Block 3 SL_GO_Cor"
+
+	newName1="AR_RLNoGoErr_bcr_CorrectSeg"
+	'newName2="AR_SL_Go_Cor_B1"
+	'newName3="AR_SL_Go_Cor_A2"
+
+
+For Each hf In HistoryFiles
+
+	If Not hf Is Nothing Then
+		hf.Open
+		Set hn = hf.FindNode(targetName)
+
+		Do While Not hn Is Nothing
+
+			path=hn.FullPath
+		'	MsgBox(path)
+		'	If InStr(path, parNodeName)<>0 Then
+
+				If InStr(path, pathTarget1)<>0 Then
+					hn.Name=newName1
+				'Else
+				'	If InStr(path, pathTarget2)<>0 Then
+				'		hn.Name=newName2
+				'	Else
+				'		If InStr(path, pathTarget3)<>0 Then
+				'			hn.Name=newName3
+				'		End If
+				'	End If
+				End If
+
+
+
+		'	End If
+
+			Set hn = hf.FindNextNode()
+
+		Loop
+
+		hf.Close
+	End If
+Next
+
+
+
+End Sub

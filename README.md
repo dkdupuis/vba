@@ -1,5 +1,3 @@
-# vba
-
 ## .vabs files
 Scripts to automate processing of cortical-neural activity using VBA-esque language
 
